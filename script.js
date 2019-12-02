@@ -1,6 +1,8 @@
 'use strict';
 const data = {
     num: 0,
+    itemIndex: 5,
+    clickActive: true,
     nodeArr: Array.from(document.querySelectorAll('.pic')),
     btnNext: document.querySelector('.btn-next'),
     btnPrev: document.querySelector('.btn-prev'),
@@ -11,101 +13,86 @@ const data = {
     marginComp: function () {
         return getComputedStyle(this.item).getPropertyValue('margin')
     },
+};
 
-}
+const slideWidth = parseInt(data.widthComp(), 10) + parseInt(data.marginComp(), 10) * 2;
 
-let slideWidth = parseInt(data.widthComp(), 10) + parseInt(data.marginComp(), 10) * 2;
-let slideEnd = slideWidth * 2;
-
-
-let btnNextMethod = () => {
-    console.log(data.num);
-    if (data.num > -slideEnd) {
-        data.num -= slideWidth;
-    } else {
-        data.num = slideEnd;
+const btnNextMethod = () => {
+    if (data.itemIndex < 11) {
+        data.itemIndex++;
     }
+
+    data.num -= slideWidth;
     data.nodeArr.forEach(el => {
         el.style.transform = `translate(${data.num}px)`;
     });
-}
 
-let btnPrevMethod = () => {
-    console.log(data.num);
-    if (data.num < slideEnd) {
-        data.num += slideWidth;
-    } else {
-        data.num = -slideEnd;
+    if (data.itemIndex === 10) {
+        setTimeout(() => {
+            data.nodeArr.forEach(el => {
+                el.style.transition = 'all 0s';
+                el.style.transform = `translate(${0}px)`;
+
+            })
+            data.num = 0;
+        }, 500);
+        setTimeout(() => {
+            data.nodeArr.forEach(el => {
+                el.style.transition = 'transform 0.5s';
+            })
+        }, 520);
+        data.itemIndex = 5;
     }
+    data.clickActive = false;
+};
+
+data.btnNext.addEventListener('click', () => {
+    if (data.clickActive) {
+        requestAnimationFrame(btnNextMethod);
+
+        setTimeout(() => {
+            data.clickActive = true;
+        }, 600);
+    }
+});
+
+const btnPrevMethod = () => {
+    if (data.itemIndex > 0) {
+        data.itemIndex--;
+    }
+
+    data.num += slideWidth;
 
     data.nodeArr.forEach(el => {
         el.style.transform = `translate(${data.num}px)`;
     });
-}
 
-data.btnNext.addEventListener('click', btnNextMethod);
+    if (data.itemIndex === 0) {
+        setTimeout(() => {
+            data.nodeArr.forEach(el => {
+                el.style.transition = 'all 0s';
+                el.style.transform = `translate(${0}px)`;
+            });
+            data.num = 0;
+        }, 500);
 
-data.btnPrev.addEventListener('click', btnPrevMethod);
+        setTimeout(() => {
+            data.nodeArr.forEach(el => {
+                el.style.transition = 'transform 0.5s';
+            });
 
-setInterval(() => {
-    btnNextMethod()
-}, 4000);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-let num = 1;
-let element = document.querySelector('.js--pic-change');
-let btnNext = document.querySelector('.btn-next');
-let btnPrev = document.querySelector('.btn-prev');
-
-
-btnNext.addEventListener("click", function (e) {
-    if (element.classList.contains("slideFromRightToLeft")) {
-        element.classList.remove("slideFromRightToLeft")
+        }, 520);
+        data.itemIndex = 5;
     }
-    e.preventDefault;
-    if (num === 3) {
-        num = 1;
-    } else {
-        num++;
+    data.clickActive = false;
+};
+
+data.btnPrev.addEventListener('click', () => {
+    if (data.clickActive) {
+        requestAnimationFrame(btnPrevMethod);
+
+        setTimeout(() => {
+            data.clickActive = true;
+        }, 600);
     }
-    element.style.backgroundImage = `url(images/pic-${num}.jpg)`;
-
-
-    element.classList.remove("slideFromLeftToRight");
-    void element.offsetWidth;
-    element.classList.add("slideFromLeftToRight");
-}, false);
-
-btnPrev.addEventListener("click", function (e) {
-    if (element.classList.contains("slideFromLeftToRight")) {
-        element.classList.remove("slideFromLeftToRight")
-    }
-    e.preventDefault;
-    if (num === 1) {
-        num = 3;
-    } else {
-        num--;
-    }
-    element.style.backgroundImage = `url(images/pic-${num}.jpg)`;
-
-
-    element.classList.remove("slideFromRightToLeft");
-    void element.offsetWidth;
-    element.classList.add("slideFromRightToLeft");
-}, false);*/
+});

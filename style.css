@@ -98,6 +98,9 @@ html {
 
 .header .slider_container {
   overflow: hidden;
+  -webkit-box-flex: 5;
+      -ms-flex: 5;
+          flex: 5;
 }
 
 .header .slider_container--list {
@@ -114,10 +117,19 @@ html {
 }
 
 .header .slider_container--list .pic {
-  -webkit-transition: -webkit-transform 1s;
-  transition: -webkit-transform 1s;
-  transition: transform 1s;
-  transition: transform 1s, -webkit-transform 1s;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-transition: -webkit-transform 0.5s;
+  transition: -webkit-transform 0.5s;
+  transition: transform 0.5s;
+  transition: transform 0.5s, -webkit-transform 0.5s;
   background-size: cover;
   width: 50rem;
   height: 40rem;
@@ -148,7 +160,20 @@ html {
 
 .btn {
   cursor: pointer;
-  height: 8rem;
-  width: 40rem;
+  font-size: 7rem;
+}
+
+.btn-container {
+  display: inline-block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 15rem;
 }
 /*# sourceMappingURL=style.css.map */
