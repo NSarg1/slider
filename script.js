@@ -1,5 +1,8 @@
 'use strict';
 const data = {
+    mouseDownX: '',
+    mouseUpX: '',
+    sliderContainer: document.querySelector('.slider_container--list'),
     nodeList: document.querySelectorAll('.pic'),
     btnNext: document.querySelector('.btn-next'),
     btnPrev: document.querySelector('.btn-prev'),
@@ -7,29 +10,26 @@ const data = {
     num: 0,
     itemIndex: 5,
     clickActive: true,
-    widthComp: function () {
+    widthComp: function() {
         return getComputedStyle(this.item).getPropertyValue('width');
     },
-    marginComp: function () {
+    marginComp: function() {
         return getComputedStyle(this.item).getPropertyValue('margin');
-    }
+    },
 };
 
 const slideWidth = parseInt(data.widthComp(), 10) + parseInt(data.marginComp(), 10) * 2;
 
- 
-function translateToZero() {
-    console.log('transitionend');
+const translateToZero = () => {
     for (const el of data.nodeList) {
         el.style.transition = 'transform 0s';
         el.style.transform = `translate(${0}px)`;
     }
     data.num = 0;
     data.itemIndex = 5;
-}
+};
 
 const resetTransition = () => {
-    console.log('transitionCancel');
     for (const el of data.nodeList) {
         el.style.transition = 'transform 0.3s';
     }
@@ -49,9 +49,11 @@ const btnNextMethod = () => {
         data.item.addEventListener('transitioncancel', resetTransition);
     } else {
         data.item.removeEventListener('transitionend', translateToZero);
+        data.item.addEventListener('transitionend', () => {
+            data.clickActive = true;
+        });
     }
     data.clickActive = false;
-    console.log(data.itemIndex);
 };
 
 const btnPrevMethod = () => {
@@ -68,26 +70,37 @@ const btnPrevMethod = () => {
         data.item.addEventListener('transitioncancel', resetTransition);
     } else {
         data.item.removeEventListener('transitionend', translateToZero);
+        data.item.addEventListener('transitionend', () => {
+            data.clickActive = true;
+        });
     }
     data.clickActive = false;
 };
-
 
 // BUTTON LISTENERS
 data.btnNext.addEventListener('click', () => {
     if (data.clickActive) {
         requestAnimationFrame(btnNextMethod);
-        data.item.addEventListener('transitionend', () => {
-            data.clickActive = true;
-        });
     }
 });
 
 data.btnPrev.addEventListener('click', () => {
     if (data.clickActive) {
         requestAnimationFrame(btnPrevMethod);
-        data.item.addEventListener('transitionend', () => {
-            data.clickActive = true;
-        });
+    }
+});
+
+// SWIPE LISTENERS
+
+data.sliderContainer.addEventListener('mousedown', e => {
+    data.mouseDownX = e.clientX;
+});
+
+data.sliderContainer.addEventListener('mouseup', e => {
+    data.mouseUpX = e.clientX;
+    if (data.mouseDownX < data.mouseUpX && data.clickActive) {
+        requestAnimationFrame(btnPrevMethod);
+    } else if (data.mouseDownX > data.mouseUpX && data.clickActive) {
+        requestAnimationFrame(btnNextMethod);
     }
 });
